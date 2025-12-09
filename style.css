@@ -247,9 +247,12 @@ body, html {
 }
 
 /* タブ */
+/* --- 修正箇所：タブのスタイル --- */
 .tabs {
     border-bottom: 2px solid #f0f0f0;
     margin-bottom: 20px;
+    display: flex; /* 横並びを保証 */
+    gap: 10px;
 }
 .tab-button {
     padding: 10px 20px;
@@ -265,6 +268,16 @@ body, html {
 .tab-button.active {
     color: var(--primary-color);
     border-bottom: 3px solid var(--primary-color);
+}
+
+/* ★重要★ タブコンテンツの表示制御を強化 */
+.tab-content {
+    display: none !important; /* 強制的に非表示 */
+    line-height: 1.6;
+}
+.tab-content.active {
+    display: block !important; /* activeがついた時だけ強制表示 */
+    animation: fadeIn 0.3s ease;
 }
 
 /* ボタン (共通) */
@@ -470,3 +483,4 @@ button:hover {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
