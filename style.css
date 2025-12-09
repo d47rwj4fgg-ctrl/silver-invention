@@ -19,7 +19,7 @@ body, html {
     font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
     background-color: var(--bg-light);
     color: var(--text-dark);
-    height: 100%;
+    /* height: 100%; ←削除: 縦に伸びるようにする */
 }
 
 .app-container {
@@ -30,7 +30,7 @@ body, html {
         "footer footer";
     grid-template-columns: 240px 1fr; /* サイドバーを少し広く */
     grid-template-rows: 70px 1fr auto;
-    height: 100vh;
+    min-height: 100vh; /* height: 100vh から変更: 最低でも画面いっぱい、多ければ伸びる */
 }
 
 /* -------------------------
@@ -109,21 +109,23 @@ body, html {
 }
 
 /* -------------------------
- * メインエリア
+ * メインエリア (スクロール対応)
  * ------------------------- */
 .main-content {
     grid-area: main;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    /* overflow: hidden; ←削除: ページ全体でスクロールさせるため */
     background-color: var(--bg-light);
+    min-height: 85vh; /* ★重要: コンテンツが少なくてもフッターを下に押しやる */
 }
 
 .main-view-panel {
     display: none;
     width: 100%;
-    height: 100%;
-    overflow-y: auto;
+    /* height: 100%; ←削除 */
+    /* overflow-y: auto; ←削除 */
+    height: auto;
 }
 .main-view-panel.active {
     display: flex;
@@ -137,7 +139,7 @@ body, html {
     flex: 1;
     padding: 30px;
     background-color: var(--bg-light);
-    overflow: auto;
+    /* overflow: auto; ←削除 */
 }
 
 .floor-map-content {
@@ -149,11 +151,13 @@ body, html {
     display: flex;
     gap: 30px;
     animation: fadeIn 0.4s ease;
+    flex-wrap: wrap; /* 画面が狭いときは折り返す */
 }
 
 /* 左：地図画像 */
 .map-left-side {
     flex: 1;
+    min-width: 300px; /* 最小幅を設定 */
     background-color: var(--white);
     border-radius: var(--border-radius);
     padding: 20px;
@@ -161,6 +165,7 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 400px; /* 高さを適度に確保 */
 }
 
 .map-left-side img {
@@ -172,10 +177,13 @@ body, html {
 /* 右：教室ボタンエリア */
 .map-right-side {
     flex: 1;
+    min-width: 300px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 15px;
     align-content: start;
+    /* overflow-y: auto; ←削除 */
+    max-height: none;
 }
 
 /* 教室ボタンのデザイン (CLASS FLOW風) */
@@ -219,21 +227,19 @@ body, html {
     height: 6px;
     background-color: #ddd; /* デフォルト */
 }
-/* JSで制御する色 (本来はクラス分け推奨ですが、今回はmove.jsの変更なしで対応するためCSSで上書きは難しい部分。
-   JSのcalculateRoomStatusが出すcolorを活かします) */
-
 
 /* -------------------------
- * 詳細エリア
+ * 詳細エリア (スクロール対応)
  * ------------------------- */
 .details-area {
     height: auto;
-    min-height: 40%;
+    /* min-height: 40%; ←削除: 中身に合わせて伸びるように */
     background-color: var(--white);
     padding: 30px;
     border-top: 1px solid #eee;
     box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
     z-index: 5;
+    /* overflow-y: auto; ←削除 */
 }
 
 .room-details-content h3 {
@@ -247,11 +253,10 @@ body, html {
 }
 
 /* タブ */
-/* --- 修正箇所：タブのスタイル --- */
 .tabs {
     border-bottom: 2px solid #f0f0f0;
     margin-bottom: 20px;
-    display: flex; /* 横並びを保証 */
+    display: flex;
     gap: 10px;
 }
 .tab-button {
@@ -280,19 +285,21 @@ body, html {
     animation: fadeIn 0.3s ease;
 }
 
-/* ボタン (共通) */
-button {
+.tab-content h4 {
+    margin-top: 0;
+}
+.tab-content button {
     background-color: var(--primary-color);
     color: var(--white);
-    border: none;
     padding: 12px 25px;
-    border-radius: 50px; /* 丸いボタン */
+    border: none;
+    border-radius: 50px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
     box-shadow: 0 4px 10px rgba(109, 192, 102, 0.4);
 }
-button:hover {
+.tab-content button:hover {
     background-color: var(--primary-hover);
     transform: translateY(-2px);
 }
@@ -327,6 +334,15 @@ button:hover {
 .search-page-filters select:focus {
     border-color: var(--primary-color);
 }
+.search-page-filters button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
 /* カテゴリカード */
 .search-page-bottom {
@@ -357,14 +373,13 @@ button:hover {
     border: 2px solid transparent;
 }
 
-/* 画像のようにカードを白ベース＋アイコン風に */
 .category-card:hover {
     transform: translateY(-5px);
     border-color: var(--primary-color);
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
-/* 色分けリセット（白ベースにするため） */
+/* 色分けリセット */
 #cat-1, #cat-2, #cat-3, #cat-4, #cat-5, #cat-6 {
     background-color: var(--white);
     color: var(--text-dark);
@@ -376,7 +391,7 @@ button:hover {
  * ------------------------- */
 .footer {
     grid-area: footer;
-    background-color: #222; /* 真っ黒に近いグレー */
+    background-color: #222;
     color: #ccc;
     padding: 40px 20px;
     text-align: center;
@@ -387,10 +402,50 @@ button:hover {
     margin-bottom: 20px;
 }
 
+/* 口コミリスト（掲示板部分） */
+.footer-reviews-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px auto;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    text-align: left;
+    max-width: 600px; /* 幅を制限 */
+}
+
+.footer-reviews-list li {
+    padding: 10px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.9rem;
+}
+
+/* 投稿フォームエリア */
+.footer-input-area {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
 .footer-input-area input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #444;
+    width: 70%;
+    max-width: 400px;
     background-color: #333;
     color: white;
-    border: 1px solid #444;
+}
+
+.footer-input-area button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 /* -------------------------
@@ -401,22 +456,33 @@ button:hover {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    width: 100%;
+    border-collapse: collapse;
 }
 .timeline-table th {
     background-color: var(--primary-color);
     color: white;
     border: none;
+    padding: 10px;
 }
 .timeline-table td {
     border: 1px solid #eee;
+    padding: 10px;
+    text-align: center;
 }
 .timeline-table .status-free {
     background-color: #f0fdf4;
     color: var(--primary-color);
+    font-weight: bold;
 }
 .timeline-table .status-occupied {
     background-color: #fff8f0;
     color: var(--accent-color);
+}
+
+.timeline-container {
+    margin-top: 15px;
+    overflow-x: auto;
 }
 
 /* -------------------------
@@ -439,7 +505,13 @@ button:hover {
 
     .main-content {
         overflow: visible;
-        min-height: 80vh;
+        height: auto;
+        flex: none;
+        min-height: 85vh; /* スマホでもフッターを下に押しやる */
+    }
+    .main-view-panel {
+        overflow-y: visible;
+        height: auto;
     }
 
     .sidebar {
@@ -464,9 +536,18 @@ button:hover {
     }
     .map-left-side {
         height: 250px;
+        flex: none;
     }
     .map-right-side {
         overflow-y: visible;
+        height: auto;
+        flex: none;
+    }
+    
+    .details-area {
+        height: auto;
+        overflow-y: visible;
+        border-top: 4px solid #f0f0f0;
     }
 
     .footer {
@@ -483,4 +564,3 @@ button:hover {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
-
