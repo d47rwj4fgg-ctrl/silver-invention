@@ -1,531 +1,472 @@
 /* -------------------------
- * 基本レイアウト
+ * 全体の設定 (CLASS FLOW風)
  * ------------------------- */
+:root {
+    --primary-color: #6dc066; /* CLASS FLOW風の緑 */
+    --primary-hover: #58a352;
+    --accent-color: #f7a072;  /* 混雑/授業中用のオレンジ */
+    --text-dark: #333333;
+    --text-light: #666666;
+    --bg-light: #f9f9f9;
+    --white: #ffffff;
+    --border-radius: 12px;    /* 柔らかい角丸 */
+    --shadow: 0 4px 15px rgba(0,0,0,0.05); /* ふんわりした影 */
+}
+
 body, html {
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-    background-color: #f0f2f5;
-    color: #333;
+    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
     height: 100%;
 }
+
 .app-container {
     display: grid;
-    /* "header header"
-       "sidebar main"
-       "footer footer" */
     grid-template-areas: 
         "header header"
         "sidebar main"
         "footer footer";
-    grid-template-columns: 200px 1fr; /* サイドバー幅 200px, メインは残り全部 */
-    grid-template-rows: 60px 1fr auto; /* ヘッダー高 60px, フッターは自動, メインは残り全部 */
-    height: 100vh; /* 画面全体の高さ */
+    grid-template-columns: 240px 1fr; /* サイドバーを少し広く */
+    grid-template-rows: 70px 1fr auto;
+    height: 100vh;
 }
 
 /* -------------------------
- * ヘッダー
+ * ヘッダー (白ベースでクリーンに)
  * ------------------------- */
 .header {
     grid-area: header;
-    background-color: #343a40;
-    color: white;
-    padding: 0 20px;
+    background-color: var(--white);
+    color: var(--text-dark);
+    padding: 0 30px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    z-index: 10;
+}
+
+.logo {
     font-size: 1.5rem;
-    font-weight: bold;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.sub-logo {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: normal;
 }
 
 /* -------------------------
- * 左サイドバー (階層)
+ * サイドバー (シンプルに)
  * ------------------------- */
 .sidebar {
     grid-area: sidebar;
-    background-color: #ffffff;
-    border-right: 1px solid #ddd;
-    padding: 15px;
+    background-color: var(--white);
+    border-right: 1px solid #eee;
+    padding: 30px 20px;
 }
+
 .sidebar h3 {
-    margin-top: 0;
-    font-size: 1.1rem;
-    color: #555;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: none;
 }
+
 .sidebar ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
+
 .sidebar .nav-link {
-    padding: 12px 10px;
+    display: block;
+    padding: 12px 20px;
+    margin-bottom: 8px;
+    border-radius: 50px; /* 角丸ボタン風 */
     cursor: pointer;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    font-weight: bold;
+    font-weight: 600;
+    color: var(--text-light);
+    transition: all 0.2s ease;
 }
+
 .sidebar .nav-link:hover {
-    background-color: #f0f0f0;
+    background-color: #f0fdf4; /* 薄い緑 */
+    color: var(--primary-color);
 }
-/* .active は .nav-link につく */
+
 .sidebar .nav-link.active {
-    background-color: #007bff;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--white);
+    box-shadow: 0 4px 10px rgba(109, 192, 102, 0.3);
 }
 
 /* -------------------------
- * メインコンテンツ
+ * メインエリア
  * ------------------------- */
 .main-content {
     grid-area: main;
     display: flex;
-    flex-direction: column; /* 上下に分割 */
-    overflow: hidden; /* スクロールバー制御 */
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--bg-light);
 }
 
-/* -------------------------
- * ページ切り替え
- * ------------------------- */
 .main-view-panel {
-    display: none; /* (1) JSで切り替えるため、基本は非表示 */
+    display: none;
     width: 100%;
     height: 100%;
-    overflow-y: auto; /* (3) 各ページでスクロール可能に */
+    overflow-y: auto;
 }
 .main-view-panel.active {
-    display: flex; /* (2) .active がついたら表示 */
+    display: flex;
     flex-direction: column;
 }
 
 /* -------------------------
- * メイン(上): 見取り図エリア
+ * 見取り図エリア
  * ------------------------- */
 .map-area {
-    flex: 1; /* 残りの高さをすべて取る */
-    padding: 20px;
-    background-color: #fdfdfd;
-    border-bottom: 2px solid #ddd;
-    overflow: auto; /* 内容が多ければスクロール */
-}
-.map-area h2 {
-    margin-top: 0;
+    flex: 1;
+    padding: 30px;
+    background-color: var(--bg-light);
+    overflow: auto;
 }
 
-/* 各階のマップコンテンツの制御 */
-/* 各階のマップコンテンツの枠 */
 .floor-map-content {
-    display: none; /* 基本は非表示 */
-    height: 100%;  /* 高さを確保 */
+    display: none;
+    height: 100%;
 }
 
-/* 表示時のスタイル (Flexboxで横並びにする) */
 .floor-map-content.active {
-    display: flex; /* ★ここを block から flex に変更 */
-    gap: 20px;     /* 左と右の間隔 */
-    animation: fadeIn 0.3s ease-in-out;
+    display: flex;
+    gap: 30px;
+    animation: fadeIn 0.4s ease;
 }
 
-/* --- 左側：見取り図エリア --- */
+/* 左：地図画像 */
 .map-left-side {
-    flex: 1; /* 幅の比率 (1:2 の 1 の方) */
-    
-    /* 画像を中央寄せするための設定 */
+    flex: 1;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden; /* 画像がはみ出ないように */
 }
 
-/* 実際に画像を入れる時のスタイル */
-/* 既存の .map-left-side img を修正 */
 .map-left-side img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* 全体が見えるように収める (余白が出る可能性あり) */
-    background-color: #f0f0f0; /* 余白部分の色 */
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
-/* --- 右側：ボタンエリア --- */
+/* 右：教室ボタンエリア */
 .map-right-side {
-    flex: 2; /* 幅の比率 (1:2 の 2 の方) */
-    overflow-y: auto; /* ボタンが多すぎる場合はここだけスクロール */
-    padding-right: 10px;
-    
-    /* ボタンをきれいに並べる設定 (グリッド表示) */
+    flex: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* 幅に合わせて自動調整 */
-    gap: 10px;     /* ボタン同士の間隔 */
-    align-content: start; /* 上詰めにする */
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+    align-content: start;
 }
 
-/* .classroom のスタイルを少し調整 (グリッド用に display を変更) */
+/* 教室ボタンのデザイン (CLASS FLOW風) */
 .classroom {
-    display: flex; /* inline-block から flex に変更 */
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 60px; /* ボタンの高さを統一 */
-    margin: 0;    /* グリッドのgapで隙間を作るのでmarginは0に */
-    
-    background-color: #d1e7dd;
-    border: 1px solid #a3c0a3;
-    border-radius: 5px;
+    height: 80px;
+    background-color: var(--white);
+    border: 2px solid #eee;
+    border-radius: 12px;
     cursor: pointer;
     font-weight: bold;
-    transition: transform 0.2s, box-shadow 0.2s;
+    color: var(--text-dark);
+    transition: all 0.2s;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
 }
 
-/* フェードインアニメーション定義 */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* デモ用の教室 (クリック可能にする) */
-.classroom {
-    display: inline-block;
-    padding: 20px;
-    margin: 10px;
-    background-color: #d1e7dd; /* 空き教室 (緑系) */
-    border: 1px solid #a3c0a3;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
 .classroom:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    border-color: var(--primary-color);
 }
-/* 選択中の教室スタイル (JSで制御) */
+
+/* 選択中の教室 */
 .classroom.selected {
-    border: 3px solid #007bff;
-    background-color: #cce5ff;
+    border-color: var(--primary-color);
+    background-color: #f0fdf4;
 }
+
+/* 状態インジケーター (ステータスバー) */
+.classroom::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background-color: #ddd; /* デフォルト */
+}
+/* JSで制御する色 (本来はクラス分け推奨ですが、今回はmove.jsの変更なしで対応するためCSSで上書きは難しい部分。
+   JSのcalculateRoomStatusが出すcolorを活かします) */
+
 
 /* -------------------------
- * メイン(下): 教室詳細エリア
+ * 詳細エリア
  * ------------------------- */
 .details-area {
-    height: 40%; /* 高さを40%に固定 */
-    background-color: #ffffff;
-    padding: 20px;
-    border-top: 1px solid #ccc;
-    overflow-y: auto; /* 詳細が長ければここだけスクロール */
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+    height: auto;
+    min-height: 40%;
+    background-color: var(--white);
+    padding: 30px;
+    border-top: 1px solid #eee;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+    z-index: 5;
 }
 
-/* 詳細情報コンテンツ (JSでの表示切替用) */
-.room-details-content {
-    display: none; /* 基本は非表示 */
-}
-.room-details-content.active {
-    display: block; /* .active が付いたら表示 */
+.room-details-content h3 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: var(--text-dark);
+    border-bottom: 2px solid var(--primary-color);
+    display: inline-block;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
 }
 
-/* タブのスタイル */
+/* タブ */
 .tabs {
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+    margin-bottom: 20px;
 }
 .tab-button {
-    padding: 10px 15px;
+    padding: 10px 20px;
     cursor: pointer;
     border: none;
-    background-color: transparent;
+    background: none;
     font-size: 1rem;
+    color: var(--text-light);
+    font-weight: 600;
     border-bottom: 3px solid transparent;
+    transition: color 0.3s;
 }
 .tab-button.active {
-    font-weight: bold;
-    border-bottom: 3px solid #007bff;
-    color: #007bff;
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--primary-color);
 }
-.tab-content {
-    display: none; /* JSで表示を切り替え */
-    line-height: 1.6;
-}
-.tab-content.active {
-    display: block;
-}
-.tab-content h4 {
-    margin-top: 0;
-}
-.tab-content button {
-    background-color: #007bff;
-    color: white;
-    padding: 8px 15px;
+
+/* ボタン (共通) */
+button {
+    background-color: var(--primary-color);
+    color: var(--white);
     border: none;
-    border-radius: 5px;
+    padding: 12px 25px;
+    border-radius: 50px; /* 丸いボタン */
+    font-weight: bold;
     cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 10px rgba(109, 192, 102, 0.4);
 }
-.tab-content button:hover {
-    background-color: #0056b3;
+button:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
 }
 
 /* -------------------------
- * 検索ページ (全体)
+ * 検索ページ
  * ------------------------- */
 #search-view .search-page-top {
-    padding: 20px;
-    background-color: #fdfdfd;
-    border-bottom: 2px solid #ddd;
-}
-#search-view h2 {
-    margin-top: 0;
+    background-color: var(--white);
+    padding: 40px;
+    text-align: center;
+    border-bottom: none;
 }
 
-/* 絞り込みフォーム */
 .search-page-filters {
     display: flex;
-    flex-wrap: wrap; /* 折り返し */
-    gap: 10px; /* 要素間の隙間 */
-}
-.search-page-filters input[type="text"],
-.search-page-filters select {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    flex-grow: 1; /* 伸びてスペースを埋める */
-}
-.search-page-filters button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-}
-.search-page-filters button:hover {
-    background-color: #0056b3;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
 }
 
-/* -------------------------
- * 検索(下): カテゴリグリッド
- * ------------------------- */
+.search-page-filters input,
+.search-page-filters select {
+    padding: 12px 20px;
+    border: 2px solid #eee;
+    border-radius: 50px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+.search-page-filters input:focus,
+.search-page-filters select:focus {
+    border-color: var(--primary-color);
+}
+
+/* カテゴリカード */
 .search-page-bottom {
-    padding: 20px;
-    flex: 1; /* 残りの高さをすべて取る */
-    background-color: #f0f2f5; /* 少し背景色を変える */
+    padding: 30px;
+    background-color: var(--bg-light);
 }
 
 .category-grid {
     display: grid;
-    /* 最小200px、最大1fr(均等)で、入るだけカラムを自動で詰める */
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px; /* グリッド間の隙間 */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
 }
 
 .category-card {
+    background-color: var(--white);
     height: 120px;
-    border-radius: 8px;
-    padding: 12px;
+    border-radius: var(--border-radius);
+    padding: 20px;
     display: flex;
-    align-items: flex-end; /* テキストを下揃え */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     cursor: pointer;
-    transition: transform 0.2s ease;
-    
-    /* カード内のテキストスタイル */
-    color: white;
-    font-size: 1.2rem;
+    box-shadow: var(--shadow);
+    transition: all 0.3s;
+    color: var(--text-dark);
     font-weight: bold;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
-    
-    /* 画像の代わりに背景色 (デモ用) */
-    background-size: cover;
-    background-position: center;
-}
-.category-card:hover {
-    transform: scale(1.03); /* 少し浮き上がる */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    border: 2px solid transparent;
 }
 
-/* カテゴリごとの色 (Apple Music風のカラフルな指定) */
-#cat-1 { background-color: #e63946; }
-#cat-2 { background-color: #f1faee; color: #1d3557; text-shadow: none;} /* 明るい色 */
-#cat-3 { background-color: #a8dadc; color: #1d3557; text-shadow: none;}
-#cat-4 { background-color: #457b9d; }
-#cat-5 { background-color: #1d3557; }
-#cat-6 { background-color: #fca311; }
+/* 画像のようにカードを白ベース＋アイコン風に */
+.category-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-color);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* 色分けリセット（白ベースにするため） */
+#cat-1, #cat-2, #cat-3, #cat-4, #cat-5, #cat-6 {
+    background-color: var(--white);
+    color: var(--text-dark);
+    text-shadow: none;
+}
 
 /* -------------------------
- * フッター
+ * フッター (黒ベースで引き締め)
  * ------------------------- */
 .footer {
     grid-area: footer;
-    background-color: #f8f9fa;
-    color: #6c757d;
-    padding: 20px;
+    background-color: #222; /* 真っ黒に近いグレー */
+    color: #ccc;
+    padding: 40px 20px;
     text-align: center;
-    border-top: 1px solid #ddd;
-    font-size: 0.9rem;
-}
-
-/* ▼▼▼ タイムライン表のスタイル (末尾に追加) ▼▼▼ */
-.timeline-container {
-    margin-top: 15px;
-    overflow-x: auto; /* 画面が狭いときは横スクロール */
-}
-
-.timeline-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.85rem; /* 少し文字を小さくして収める */
-    min-width: 400px; /* 最低限の幅を確保 */
-}
-
-.timeline-table th,
-.timeline-table td {
-    border: 1px solid #ddd;
-    padding: 6px;
-    text-align: center;
-    vertical-align: middle;
-}
-
-/* ヘッダーと曜日列 */
-.timeline-table thead th {
-    background-color: #f8f9fa;
-    font-weight: bold;
-    color: #555;
-}
-.timeline-table .day-header {
-    background-color: #f8f9fa;
-    font-weight: bold;
-    white-space: nowrap;
-}
-
-/* 空きコマのスタイル */
-.timeline-table .status-free {
-    background-color: #e6f7ff;
-    color: #007bff;
-    font-weight: bold;
-}
-
-/* 授業中のスタイル */
-.timeline-table .status-occupied {
-    background-color: #fff3cd; /* 薄い黄色/オレンジ */
-    color: #856404;
-    font-size: 0.75rem; /* 授業名は小さく */
-}
-
-.footer {
-    /* 既存のスタイルを少し調整 */
-    background-color: #343a40; /* ヘッダーと同じ暗い色にすると締まります */
-    color: white;
-    padding: 30px 20px;
-    text-align: center;
-}
-
-.footer-container {
-    max-width: 800px;
-    margin: 0 auto; /* 中央寄せ */
 }
 
 .footer h3 {
-    margin-top: 0;
-    color: #fff;
-}
-
-/* 口コミリスト（掲示板部分） */
-.footer-reviews-list {
-    list-style: none;
-    padding: 0;
-    margin: 20px 0;
-    background-color: rgba(255, 255, 255, 0.1); /* 半透明の背景 */
-    border-radius: 8px;
-    max-height: 200px; /* 高さを制限 */
-    overflow-y: auto;  /* 溢れたらスクロール */
-    text-align: left;
-}
-
-.footer-reviews-list li {
-    padding: 10px 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    font-size: 0.9rem;
-}
-
-/* 投稿フォームエリア */
-.footer-input-area {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
+    color: var(--white);
+    margin-bottom: 20px;
 }
 
 .footer-input-area input {
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    width: 70%;
-    max-width: 400px;
-}
-
-.footer-input-area button {
-    padding: 10px 20px;
-    border-radius: 5px;
-    border: none;
-    background-color: #007bff;
+    background-color: #333;
     color: white;
-    cursor: pointer;
-    font-weight: bold;
+    border: 1px solid #444;
 }
 
-.footer-input-area button:hover {
-    background-color: #0056b3;
+/* -------------------------
+ * タイムライン表
+ * ------------------------- */
+.timeline-table {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+.timeline-table th {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+}
+.timeline-table td {
+    border: 1px solid #eee;
+}
+.timeline-table .status-free {
+    background-color: #f0fdf4;
+    color: var(--primary-color);
+}
+.timeline-table .status-occupied {
+    background-color: #fff8f0;
+    color: var(--accent-color);
 }
 
-/* ▼▼▼ スマホ対応 (レスポンシブデザイン) ▼▼▼ */
+/* -------------------------
+ * スマホ対応
+ * ------------------------- */
 @media (max-width: 768px) {
-    /* 全体レイアウトを縦並びに */
     .app-container {
-        grid-template-areas: 
-            "header"
-            "main"
-            "sidebar" /* サイドバーを下に回すか、上に置くか */
-            "footer";
-        grid-template-columns: 1fr; /* 1列にする */
-        grid-template-rows: 60px 1fr auto auto;
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+    
+    .header {
+        justify-content: center;
+        flex-direction: column;
+        padding: 15px;
+    }
+    .sub-logo { margin-top: 5px; }
+
+    .main-content {
+        overflow: visible;
+        min-height: 80vh;
     }
 
-    /* サイドバーを横スクロール可能なメニューバーに変更 */
     .sidebar {
-        border-right: none;
-        border-top: 1px solid #ddd;
-        order: 2; /* 順序制御 */
-        white-space: nowrap;
-        overflow-x: auto;
         padding: 10px;
+        overflow-x: auto;
+        border-bottom: 1px solid #ddd;
     }
     .sidebar ul {
         display: flex;
+        gap: 10px;
     }
     .sidebar .nav-link {
-        margin-right: 10px;
         margin-bottom: 0;
-        padding: 10px 20px;
-        background-color: #f8f9fa;
-        border: 1px solid #ddd;
+        white-space: nowrap;
+        padding: 8px 16px;
+        font-size: 0.85rem;
     }
 
-    /* 見取り図エリアを縦並びに */
+    /* 地図とボタンを縦積みに */
     .floor-map-content.active {
-        flex-direction: column; /* 左(図)と右(ボタン)を縦に積む */
+        flex-direction: column;
     }
     .map-left-side {
-        height: 300px; /* 図の高さを固定 */
-        flex: none;
+        height: 250px;
     }
     .map-right-side {
-        flex: none;
-        height: auto; /* ボタンエリアは中身に合わせて伸びる */
-        max-height: 200px;
-        overflow-y: auto;
+        overflow-y: visible;
+    }
+
+    .footer {
+        padding-bottom: 80px;
     }
     
-    /* 詳細エリアを広げる */
-    .details-area {
-        height: auto;
-        flex: 1; /* 残りのスペースを使う */
+    .search-page-filters {
+        flex-direction: column;
     }
+}
+
+/* フェードイン */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
